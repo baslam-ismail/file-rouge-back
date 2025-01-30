@@ -2,12 +2,14 @@ package com.malsi.back_malsi.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -20,5 +22,4 @@ public class Client extends Person{
     private List<Demand> demands;
     @OneToMany(mappedBy = "client")
     private List<Meeting> meetings;
-
 }
