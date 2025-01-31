@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Entity
-@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
