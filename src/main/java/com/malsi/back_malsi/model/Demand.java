@@ -2,14 +2,15 @@ package com.malsi.back_malsi.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@EqualsAndHashCode(callSuper = false)
 @Table(name = "demands")
 public class Demand extends BaseModel{
     @Column(name = "label", nullable = false)

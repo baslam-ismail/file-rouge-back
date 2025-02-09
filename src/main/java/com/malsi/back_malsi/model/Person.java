@@ -3,7 +3,9 @@ package com.malsi.back_malsi.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = false)
 @Data
 @MappedSuperclass
 public class Person extends BaseModel{
@@ -13,6 +15,6 @@ public class Person extends BaseModel{
     private String email;
     @Column(name = "address")
     private String address;
-    @Column(name = "phone", unique = true)
+    @Column(name = "phone", nullable = false, unique = true)
     private String phone;
 }

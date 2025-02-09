@@ -5,12 +5,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = false)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,10 +22,10 @@ public class User extends Person{
     private String password;
     @Column(name = "role", nullable = false)
     private String role;
-    @Column(name = "is_active", nullable = false)
-    private boolean is_active;
-    @Column(name = "is_deleted", nullable = false)
-    private boolean is_deleted;
+    @Column(name = "is_active", nullable = false, columnDefinition = "boolean default true")
+    private boolean is_active = true;
+    @Column(name = "is_deleted", nullable = false, columnDefinition = "boolean default false")
+    private boolean is_deleted = false;
     @OneToMany(mappedBy = "user")
     private List<Client> clients;
 }
