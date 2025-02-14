@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 
@@ -82,7 +81,7 @@ public class ClientController {
     @GetMapping("/demands/{client_id}")
     public ResponseEntity<List<DemandDto>> getClientDemands(@PathVariable Integer client_id) {
         List<DemandDto> demands = clientService.getClientDemands(client_id);
-        
+
         return new ResponseEntity<List<DemandDto>>(demands, HttpStatus.OK);
     }
     
