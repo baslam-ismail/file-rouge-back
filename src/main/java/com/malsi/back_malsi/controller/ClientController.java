@@ -8,7 +8,9 @@ import com.malsi.back_malsi.dto.DemandDto;
 import com.malsi.back_malsi.dto.MeetingDto;
 import com.malsi.back_malsi.dto.UserDto;
 import com.malsi.back_malsi.model.Client;
+import com.malsi.back_malsi.model.User;
 import com.malsi.back_malsi.service.ClientService;
+import com.malsi.back_malsi.service.UserService;
 
 import java.util.List;
 
@@ -28,10 +30,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class ClientController {
     @Autowired
     ClientService clientService;
+    @Autowired
+    UserService userService;
 
     @PostMapping("/create")
     public ResponseEntity<ClientDto> createClient(@RequestBody Client client) {
         ClientDto createdClient = clientService.createClient(client);
+        User user = new User();
+        user.setName(client.getName());
+        user.setEmail(client.getEmail());
+        user.setAddress(client.getAddress());
+        user.setRole("client");
+        user.setPhone(client.getPhone());
+        user.setPassword("Passer123");
+
+        userService.createUser(user);
 
         return new ResponseEntity<ClientDto>(createdClient, HttpStatus.CREATED);
     }
