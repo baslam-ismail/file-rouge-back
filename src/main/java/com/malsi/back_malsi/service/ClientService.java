@@ -35,6 +35,9 @@ public class ClientService {
 
     public List<ClientDto> getClients() {
         List<Client> clients = this.clientRepository.findAll();
+        if (clients == null) {
+            return null;
+        }
         List<ClientDto> clientsDto = new ArrayList<>();
 
         for (Client client : clients) {
@@ -46,30 +49,45 @@ public class ClientService {
 
     public ClientDto getClientById(Integer id) {
         Client client = this.clientRepository.findById(id).orElse(null);
+        if (client == null) {
+            return null;
+        }
 
         return this.modelMapper.map(client, ClientDto.class);
     }
 
     public UserDto getClientCommercial(int clientId) {
         Client client = this.clientRepository.findById(clientId).orElse(null);
+        if (client == null) {
+            return null;
+        }
 
         return this.modelMapper.map(client.getUser(), UserDto.class);
     }
 
     public ClientDto getClientByPhone(String phone) {
         Client client = this.clientRepository.findByPhone(phone).orElse(null);
+        if (client == null) {
+            return null;
+        }
 
         return this.modelMapper.map(client, ClientDto.class);
     }
 
     public ClientDto getClientByEmail(String email) {
         Client client = this.clientRepository.findByEmail(email).orElse(null);
+        if (client == null) {
+            return null;
+        }
 
         return this.modelMapper.map(client, ClientDto.class);
     }
 
     public List<MeetingDto> getClientMeetings(int clientId) {
         Client client = this.clientRepository.findById(clientId).orElse(null);
+        if (client == null) {
+            return null;
+        }
         List<MeetingDto> meetings = new ArrayList<>();
 
         for (Meeting meeting : client.getMeetings()) {
@@ -80,6 +98,9 @@ public class ClientService {
 
     public List<DemandDto> getClientDemands(int clientId) {
         Client client = this.clientRepository.findById(clientId).orElse(null);
+        if (client == null) {
+            return null;
+        }
         List<DemandDto> demands = new ArrayList<>();
 
         for (Demand demand : client.getDemands()) {

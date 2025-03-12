@@ -10,6 +10,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,10 +18,20 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/create")
     public ResponseEntity<UserDto> createUser(@RequestBody User user) {
+        UserDto userInBase = userService.getUserByEmail(user.getEmail());
+        if (userInBase != null) {
+            return new ResponseEntity<UserDto>(HttpStatus.CONFLICT);
+        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         UserDto createdUser = this.userService.createUser(user);
+        if (createdUser == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
         return new ResponseEntity<UserDto>(createdUser, HttpStatus.CREATED);
     }
 

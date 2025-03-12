@@ -1,11 +1,16 @@
 package com.malsi.back_malsi;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.malsi.back_malsi.model.User;
+import com.malsi.back_malsi.repository.UserRepository;
 
 @EnableJpaAuditing
 @EnableJpaRepositories
@@ -19,5 +24,27 @@ public class BackMalsiApplication {
 	@Bean
 	public ModelMapper getModelMapper() {
 		return new ModelMapper();
+	}
+
+	@Bean
+	public CommandLineRunner commandLineRunner(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+		return args -> {
+			String email = "admin@admin.com";
+
+			if (!userRepository.findByEmail(email).isPresent()) {
+				User user = new User();
+				user.setName("Admin");
+				user.setEmail(email);
+				user.setAddress("Paris");
+				user.setPhone("06060606060606");
+				user.setPassword(passwordEncoder.encode("admin123"));
+				user.setRole("ADMIN");
+
+				userRepository.save(user);
+				System.out.println("Utilisateur admin créé avec succès.");
+			} else {
+				System.out.println("L'utilisateur admin existe déjà.");
+			}
+		};
 	}
 }

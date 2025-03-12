@@ -32,6 +32,9 @@ public class MeetingService {
 
     public MeetingDto getMeetingById(Integer id) {
         Meeting meeting = this.meetingRepository.findById(id).orElse(null);
+        if (meeting == null) {
+            return null;
+        }
 
         return this.modelMapper.map(meeting, MeetingDto.class);
     }
@@ -42,6 +45,9 @@ public class MeetingService {
 
     public List<MeetingDto> getMeetings() {
         List<Meeting> meetings = this.meetingRepository.findAll();
+        if (meetings == null) {
+            return null;
+        }
 
         List<MeetingDto> meetingsDto = new ArrayList<>();
 
@@ -55,12 +61,18 @@ public class MeetingService {
     public List<MeetingDto> getClientMeetings(Integer clientId) {
         ClientDto client = this.modelMapper.map(this.clientRepository.findById(clientId).orElse(null), ClientDto.class);
         List<MeetingDto> meetings = client.getMeetings();
+        if (meetings == null) {
+            return null;
+        }
 
         return meetings;
     }
 
     public MeetingDto updateMeetingStatus(Integer id, String status) {
         Meeting meeting = this.meetingRepository.findById(id).orElse(null);
+        if (meeting == null) {
+            return null;
+        }
         meeting.setStatus(status);
 
         return this.modelMapper.map(this.meetingRepository.save(meeting), MeetingDto.class);
@@ -68,6 +80,9 @@ public class MeetingService {
 
     public MeetingDto updateMeetingMotif(Integer id, String motif) {
         Meeting meeting = this.meetingRepository.findById(id).orElse(null);
+        if (meeting == null) {
+            return null;
+        }
         meeting.setMotif(motif);
 
         return this.modelMapper.map(this.meetingRepository.save(meeting), MeetingDto.class);
@@ -75,6 +90,9 @@ public class MeetingService {
 
     public ClientDto getMeetingClient(Integer id) {
         Meeting meeting = this.meetingRepository.findById(id).orElse(null);
+        if (meeting == null) {
+            return null;
+        }
         ClientDto client = this.modelMapper.map(meeting.getClient(), ClientDto.class);
 
         return client;

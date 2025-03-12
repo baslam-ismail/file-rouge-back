@@ -17,6 +17,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,10 +33,11 @@ public class ClientController {
     ClientService clientService;
     @Autowired
     UserService userService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/create")
     public ResponseEntity<ClientDto> createClient(@RequestBody Client client) {
-        ClientDto createdClient = clientService.createClient(client);
         User user = new User();
         user.setName(client.getName());
         user.setEmail(client.getEmail());
@@ -44,7 +46,14 @@ public class ClientController {
         user.setPhone(client.getPhone());
         user.setPassword("Passer123");
 
+        UserDto userInBase = userService.getUserByEmail(user.getEmail());
+        if (userInBase != null) {
+            return new ResponseEntity<ClientDto>(HttpStatus.CONFLICT);
+        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         userService.createUser(user);
+        ClientDto createdClient = clientService.createClient(client);
 
         return new ResponseEntity<ClientDto>(createdClient, HttpStatus.CREATED);
     }

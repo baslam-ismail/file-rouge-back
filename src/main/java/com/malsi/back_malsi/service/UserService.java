@@ -28,6 +28,9 @@ public class UserService {
         List<User> users = this.userRepository.findAll();
         List<UserDto> usersDto = new ArrayList<>();
 
+        if (users == null) {
+            return null;
+        }
         for (User user : users) {
             usersDto.add(this.modelMapper.map(user, UserDto.class));
         }
@@ -37,12 +40,17 @@ public class UserService {
 
     public UserDto getUserById(Integer id) {
         User user = this.userRepository.findById(id).orElse(null);
-
+        if (user == null) {
+            return null;
+        }
         return this.modelMapper.map(user, UserDto.class);
     }
 
     public UserDto getUserByPhone (String phone) {
         User user = this.userRepository.findByPhone(phone).orElse(null);
+        if (user == null) {
+            return null;
+        }
 
         return this.modelMapper.map(user, UserDto.class);
     }
@@ -50,12 +58,19 @@ public class UserService {
     public UserDto getUserByEmail (String email) {
         User user = this.userRepository.findByEmail(email).orElse(null);
 
+        if (user == null) {
+            return null;
+        }
+
         return this.modelMapper.map(user, UserDto.class);
     }
 
     public List<ClientDto> getClientsUser(int userId) {
         User user = this.userRepository.findById(userId).orElse(null);
         List<ClientDto> clients = new ArrayList<>();
+        if (user == null) {
+            return null;
+        }
 
         for (Client client : user.getClients()) {
             clients.add(this.modelMapper.map(client, ClientDto.class));
