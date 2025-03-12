@@ -57,6 +57,16 @@ public class ClientControllerTest {
     }
 
     @Test
+    public void testCreateClientWithInvalidData() {
+        Client client = new Client();
+        client.setName(null); // Invalid data
+
+        ResponseEntity<ClientDto> response = clientController.createClient(client);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
     public void testGetClients() {
         List<ClientDto> clientList = Arrays.asList(new ClientDto(), new ClientDto());
         when(clientService.getClients()).thenReturn(clientList);
@@ -132,4 +142,5 @@ public class ClientControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(demandList, response.getBody());
     }
+
 }

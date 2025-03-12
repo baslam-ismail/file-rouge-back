@@ -38,6 +38,11 @@ public class ClientController {
 
     @PostMapping("/create")
     public ResponseEntity<ClientDto> createClient(@RequestBody Client client) {
+
+        if (client.getName() == null || client.getName().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
         User user = new User();
         user.setName(client.getName());
         user.setEmail(client.getEmail());

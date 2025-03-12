@@ -30,6 +30,10 @@ public class MeetingController {
 
     @PostMapping("/create")
     public ResponseEntity<MeetingDto> createMeeting(@RequestBody Meeting meeting) {
+        if (meeting.getDate() == null || meeting.getClient() == null || meeting.getClient().getId() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
         MeetingDto createdMeeting = meetingService.createMeeting(meeting);
         
         return new ResponseEntity<MeetingDto>(createdMeeting, HttpStatus.CREATED);
@@ -45,7 +49,9 @@ public class MeetingController {
     @GetMapping("/{id}")
     public ResponseEntity<MeetingDto> getMeetingById(@PathVariable Integer id) {
         MeetingDto meeting = meetingService.getMeetingById(id);
-
+        if (meeting == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
         return new ResponseEntity<MeetingDto>(meeting, HttpStatus.OK);
     }
 
