@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.Arrays;
 import java.util.List;
 
+import com.malsi.back_malsi.model.Client;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,7 +35,13 @@ public class MeetingControllerTest {
     @Test
     public void testCreateMeeting() {
         Meeting meeting = new Meeting();
+        meeting.setMotif("Test Motif");
         meeting.setDate("30-04-2025");
+        meeting.setTime("10:00");
+        meeting.setStatus("En attente");
+        Client client = new Client();
+        client.setId(1);
+        meeting.setClient(client);
 
         MeetingDto meetingDto = new MeetingDto();
         when(meetingService.createMeeting(any(Meeting.class))).thenReturn(meetingDto);
