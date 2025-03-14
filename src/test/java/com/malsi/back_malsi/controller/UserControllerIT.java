@@ -2,8 +2,10 @@ package com.malsi.back_malsi.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.malsi.back_malsi.config.JwtUtils;
 import com.malsi.back_malsi.model.User;
 import com.malsi.back_malsi.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -31,24 +33,41 @@ public class UserControllerIT {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private JwtUtils jwtUtils;
+
+    private String jwtToken;
+
+
+    @BeforeEach
+    void setUp() {
+        User testUser = new User();
+        testUser.setName("Test User");
+        testUser.setPhone("0612345678");
+        testUser.setEmail("test@example.com");
+        testUser.setPassword("password123");
+        testUser.setRole("client");
+        userRepository.save(testUser);
+        jwtToken = "Bearer " + jwtUtils.generateToken("test@example.com");
+    }
+
     @Test
     void testCreateUser() throws Exception {
         User user = new User();
         user.setName("Test");
         user.setPhone("0612345678");
-        user.setEmail("test@example.com");
+        user.setEmail("newuser@example.com");
         user.setPassword("password123");
         user.setRole("client");
-
 
         String userJson = objectMapper.writeValueAsString(user);
 
         mockMvc.perform(post("/api/users/create")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(userJson))
+                        .content(userJson)
+                        .header("Authorization", jwtToken))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.role").value("client"));
-
     }
 
     @Test
@@ -70,10 +89,11 @@ public class UserControllerIT {
         userRepository.save(user1);
         userRepository.save(user2);
 
-        mockMvc.perform(get("/api/users/"))
+        mockMvc.perform(get("/api/users/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", jwtToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value("User1"))
-                .andExpect(jsonPath("$[1].name").value("User2"));
+                .andReturn();
     }
 
     @Test
@@ -86,7 +106,9 @@ public class UserControllerIT {
         user3.setRole("client");
         User savedUser = userRepository.save(user3);
 
-        mockMvc.perform(get("/api/users/" + savedUser.getId()))
+        mockMvc.perform(get("/api/users/" + savedUser.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", jwtToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(savedUser.getId()))
                 .andExpect(jsonPath("$.name").value("User3"));

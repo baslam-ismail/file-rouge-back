@@ -25,6 +25,7 @@ import com.malsi.back_malsi.model.Client;
 import com.malsi.back_malsi.model.User;
 import com.malsi.back_malsi.service.ClientService;
 import com.malsi.back_malsi.service.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 public class ClientControllerTest {
@@ -34,6 +35,9 @@ public class ClientControllerTest {
 
     @Mock
     private UserService userService;
+
+    @Mock
+    PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private ClientController clientController;
@@ -46,7 +50,9 @@ public class ClientControllerTest {
         client.setAddress("123 Test St");
         client.setPhone("0612345678");
 
+
         ClientDto clientDto = new ClientDto();
+        when(passwordEncoder.encode(any(CharSequence.class))).thenReturn("encodedPassword");
         when(clientService.createClient(any(Client.class))).thenReturn(clientDto);
 
         ResponseEntity<ClientDto> response = clientController.createClient(client);
@@ -59,7 +65,7 @@ public class ClientControllerTest {
     @Test
     public void testCreateClientWithInvalidData() {
         Client client = new Client();
-        client.setName(null); // Invalid data
+        client.setName(null);
 
         ResponseEntity<ClientDto> response = clientController.createClient(client);
 

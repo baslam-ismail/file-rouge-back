@@ -1,7 +1,6 @@
 package com.malsi.back_malsi.controller;
 
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,12 +20,16 @@ import com.malsi.back_malsi.dto.UserDto;
 import com.malsi.back_malsi.dto.ClientDto;
 import com.malsi.back_malsi.model.User;
 import com.malsi.back_malsi.service.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 public class UserControllerTest {
 
     @Mock
     private UserService userService;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private UserController userController;
@@ -35,8 +38,10 @@ public class UserControllerTest {
     public void testCreateUser() {
         User user = new User();
         user.setName("Test User");
+        user.setPassword("password123");
 
         UserDto userDto = new UserDto();
+        when(passwordEncoder.encode(any(CharSequence.class))).thenReturn("encodedPassword");
         when(userService.createUser(any(User.class))).thenReturn(userDto);
 
         ResponseEntity<UserDto> response = userController.createUser(user);

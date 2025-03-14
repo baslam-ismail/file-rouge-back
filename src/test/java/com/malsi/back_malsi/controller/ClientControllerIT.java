@@ -1,11 +1,13 @@
 package com.malsi.back_malsi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.malsi.back_malsi.config.JwtUtils;
 import com.malsi.back_malsi.dto.UserDto;
 import com.malsi.back_malsi.model.Client;
 import com.malsi.back_malsi.model.User;
 import com.malsi.back_malsi.service.ClientService;
 import com.malsi.back_malsi.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,12 @@ public class ClientControllerIT {
     @Autowired
     ModelMapper modelMapper;
 
+    @Autowired
+    private JwtUtils jwtUtils;
+
+    private String jwtToken;
+
+
     @Test
     public void testCreateClientWithValidData() throws Exception {
         User user = new User();
@@ -50,6 +58,7 @@ public class ClientControllerIT {
 
         UserDto savedUserDto = userService.createUser(user);
         User savedUser = this.modelMapper.map(savedUserDto, User.class);
+        jwtToken = "Bearer " + jwtUtils.generateToken("john.doe@example.com");
 
         Client client = new Client();
         client.setName("John Doe Client");
@@ -60,6 +69,7 @@ public class ClientControllerIT {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/clients/create")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", jwtToken)
                         .content(objectMapper.writeValueAsString(client)))
                 .andExpect(status().isCreated());
     }
@@ -67,11 +77,24 @@ public class ClientControllerIT {
 
     @Test
     public void testCreateClientWithInvalidData() throws Exception {
+        User user1 = new User();
+        user1.setName("John Doe1");
+        user1.setEmail("john.doe1@example.com");
+        user1.setAddress("13 Main Street");
+        user1.setRole("client");
+        user1.setPhone("012345678");
+        user1.setPassword("Passerword123");
+
+        UserDto savedUserDto = userService.createUser(user1);
+        User savedUser = this.modelMapper.map(savedUserDto, User.class);
+        jwtToken = "Bearer " + jwtUtils.generateToken("john.doe1@example.com");
+
         Client client = new Client();
-        client.setName(null);
+        client.setEmail(null);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/clients/create")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", jwtToken)
                         .content(objectMapper.writeValueAsString(client)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
