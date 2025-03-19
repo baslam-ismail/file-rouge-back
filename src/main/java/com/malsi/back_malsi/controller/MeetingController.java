@@ -50,14 +50,8 @@ public class MeetingController {
     public ResponseEntity<MeetingDto> getMeetingById(@PathVariable Integer id) {
         MeetingDto meeting = meetingService.getMeetingById(id);
         if (meeting == null) {
-<<<<<<< Updated upstream
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-=======
-            return new ResponseEntity<MeetingDto>(HttpStatus.NOT_FOUND);
-        }
-
->>>>>>> Stashed changes
         return new ResponseEntity<MeetingDto>(meeting, HttpStatus.OK);
     }
 
