@@ -35,9 +35,7 @@ public class ClientService {
 
     public List<ClientDto> getClients() {
         List<Client> clients = this.clientRepository.findAll();
-        if (clients == null) {
-            return null;
-        }
+        
         List<ClientDto> clientsDto = new ArrayList<>();
 
         for (Client client : clients) {

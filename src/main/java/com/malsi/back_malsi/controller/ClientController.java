@@ -73,6 +73,9 @@ public class ClientController {
     @GetMapping("/{id}")
     public ResponseEntity<ClientDto> getClientById(@PathVariable Integer id) {
         ClientDto client = clientService.getClientById(id);
+        if (client == null) {
+            return new ResponseEntity<ClientDto>(HttpStatus.NOT_FOUND);
+        }
 
         return new ResponseEntity<ClientDto>(client, HttpStatus.OK);
     }
@@ -80,6 +83,9 @@ public class ClientController {
     @GetMapping("/phone/{phone}")
     public ResponseEntity<ClientDto> getClientByPhone(@PathVariable String phone) {
         ClientDto client = clientService.getClientByPhone(phone);
+        if (client == null) {
+            return new ResponseEntity<ClientDto>(HttpStatus.NOT_FOUND);
+        }
 
         return new ResponseEntity<ClientDto>(client, HttpStatus.OK);
     }
@@ -87,6 +93,9 @@ public class ClientController {
     @GetMapping("/email/{email}")
     public ResponseEntity<ClientDto> getClientByEmail(@PathVariable String email) {
         ClientDto client = clientService.getClientByEmail(email);
+        if (client == null) {
+            return new ResponseEntity<ClientDto>(HttpStatus.NOT_FOUND);
+        }
         
         return new ResponseEntity<ClientDto>(client, HttpStatus.OK);
     }

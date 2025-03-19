@@ -9,7 +9,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.malsi.back_malsi.model.Category;
 import com.malsi.back_malsi.model.User;
+import com.malsi.back_malsi.repository.CategoryRepository;
 import com.malsi.back_malsi.repository.UserRepository;
 
 @EnableJpaAuditing
@@ -27,7 +29,7 @@ public class BackMalsiApplication {
 	}
 
 	@Bean
-	public CommandLineRunner commandLineRunner(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+	public CommandLineRunner commandLineRunner(UserRepository userRepository, PasswordEncoder passwordEncoder, CategoryRepository categoryRepository) {
 		return args -> {
 			String email = "admin@admin.com";
 
@@ -44,6 +46,24 @@ public class BackMalsiApplication {
 				System.out.println("Utilisateur admin créé avec succès.");
 			} else {
 				System.out.println("L'utilisateur admin existe déjà.");
+			}
+
+			if (!categoryRepository.findByLabel("service").isPresent()) {
+				Category category = new Category();
+				category.setLabel("service");
+				category.setPriority("moyenne");
+
+				categoryRepository.save(category);
+				System.out.println("Catégorie service créée avec succès.");
+			}
+
+			if (!categoryRepository.findByLabel("operation").isPresent()) {
+				Category category = new Category();
+				category.setLabel("operation");
+				category.setPriority("haute");
+
+				categoryRepository.save(category);
+				System.out.println("Catégorie operation créée avec succès.");
 			}
 		};
 	}

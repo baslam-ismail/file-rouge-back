@@ -60,10 +60,10 @@ public class MeetingService {
 
     public List<MeetingDto> getClientMeetings(Integer clientId) {
         ClientDto client = this.modelMapper.map(this.clientRepository.findById(clientId).orElse(null), ClientDto.class);
-        List<MeetingDto> meetings = client.getMeetings();
-        if (meetings == null) {
+        if (client == null) {
             return null;
         }
+        List<MeetingDto> meetings = client.getMeetings();
 
         return meetings;
     }

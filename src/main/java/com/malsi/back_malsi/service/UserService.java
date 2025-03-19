@@ -28,9 +28,6 @@ public class UserService {
         List<User> users = this.userRepository.findAll();
         List<UserDto> usersDto = new ArrayList<>();
 
-        if (users == null) {
-            return null;
-        }
         for (User user : users) {
             usersDto.add(this.modelMapper.map(user, UserDto.class));
         }

@@ -10,8 +10,6 @@ public class DemandDto {
     private String label;
     private String description;
     private String status;
-    private String type;
-    private String date;
     @JsonIgnore
     private ClientDto client;
     @JsonIgnore
