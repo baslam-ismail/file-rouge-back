@@ -39,7 +39,7 @@ public class BackMalsiApplication {
 				user.setEmail(email);
 				user.setAddress("Paris");
 				user.setPhone("06060606060606");
-				user.setPassword(passwordEncoder.encode("admin123"));
+					user.setPassword(passwordEncoder.encode("admin123"));
 				user.setRole("ADMIN");
 
 				userRepository.save(user);

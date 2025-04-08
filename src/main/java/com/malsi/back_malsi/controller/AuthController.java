@@ -2,7 +2,9 @@ package com.malsi.back_malsi.controller;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
+import com.malsi.back_malsi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +31,8 @@ public class AuthController {
     private JwtUtils jwtUtils;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private UserRepository userRepository;
     
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
@@ -37,8 +41,13 @@ public class AuthController {
 
             if (authentication.isAuthenticated()) {
                 Map<String, Object> authData = new HashMap<>();
-                authData.put("token", jwtUtils.generateToken(user.getEmail()));
+                authData.put("token", jwtUtils.generateToken(user));
                 authData.put("type", "Bearer");
+                Optional<User> userAuthenticated = userRepository.findByEmail(user.getEmail());
+                if(userAuthenticated.isPresent()) {
+                authData.put("userId", userAuthenticated.get().getId());
+                authData.put("role", userAuthenticated.get().getRole());
+                }
 
                 return ResponseEntity.ok(authData);
             }
