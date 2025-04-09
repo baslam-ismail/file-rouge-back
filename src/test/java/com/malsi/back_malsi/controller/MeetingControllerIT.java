@@ -52,7 +52,7 @@ public class MeetingControllerIT {
 
         UserDto savedUserDto = userService.createUser(user4);
         User savedUser = this.modelMapper.map(savedUserDto, User.class);
-        jwtToken = "Bearer " + jwtUtils.generateToken("john.doe4@example.com");
+        jwtToken = "Bearer " + jwtUtils.generateToken(savedUser);
 
         Meeting meeting = new Meeting();
         meeting.setDate("30-04-2025");
@@ -82,7 +82,7 @@ public class MeetingControllerIT {
 
         UserDto savedUserDto = userService.createUser(user5);
         User savedUser = this.modelMapper.map(savedUserDto, User.class);
-        jwtToken = "Bearer " + jwtUtils.generateToken("john.doe5@example.com");
+        jwtToken = "Bearer " + jwtUtils.generateToken(savedUser);
 
         Meeting meeting = new Meeting();
         meeting.setDate(null);
@@ -96,7 +96,7 @@ public class MeetingControllerIT {
 
     @Test
     public void testGetMeetings() throws Exception {
-        jwtToken = "Bearer " + jwtUtils.generateToken("john.doe4@example.com");
+        jwtToken = "Bearer " + jwtUtils.generateToken(savedUser);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/meetings/")
                         .contentType(MediaType.APPLICATION_JSON)

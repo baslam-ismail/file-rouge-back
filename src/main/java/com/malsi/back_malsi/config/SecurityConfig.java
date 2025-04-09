@@ -16,6 +16,11 @@ import com.malsi.back_malsi.filter.JwtFilter;
 import com.malsi.back_malsi.service.CustomUserDetailsService;
 
 import lombok.AllArgsConstructor;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @AllArgsConstructor
@@ -39,10 +44,25 @@ public class SecurityConfig {
     }
     @Bean
     public SecurityFilterChain securityFilterChain (HttpSecurity htpp) throws Exception {
-        return htpp.csrf(AbstractHttpConfigurer::disable)
+        return htpp
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> 
         auth.requestMatchers("/api/auth/*", "/swagger-ui/*", "/api-docs/*", "/api-docs").permitAll().anyRequest().authenticated()
         ).addFilterBefore(new JwtFilter(customUserDetailsService, jwtUtils), EmailPasswordAuthenticationFilter.class)
         .build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
