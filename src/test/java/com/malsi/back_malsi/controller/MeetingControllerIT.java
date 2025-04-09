@@ -96,6 +96,16 @@ public class MeetingControllerIT {
 
     @Test
     public void testGetMeetings() throws Exception {
+        User user6 = new User();
+        user6.setName("John Doe6");
+        user6.setEmail("john.doe6@example.com");
+        user6.setAddress("136 Main Street");
+        user6.setRole("client");
+        user6.setPhone("0682319756");
+        user6.setPassword("Passerword123456");
+
+        UserDto savedUserDto = userService.createUser(user6);
+        User savedUser = this.modelMapper.map(savedUserDto, User.class);
         jwtToken = "Bearer " + jwtUtils.generateToken(savedUser);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/meetings/")
@@ -107,7 +117,9 @@ public class MeetingControllerIT {
 
     @Test
     public void testDeleteMeeting() throws Exception {
-        jwtToken = "Bearer " + jwtUtils.generateToken("john.doe4@example.com");
+        UserDto userDto = userService.getUserByEmail("john.doe4@example.com");
+        User user = this.modelMapper.map(userDto, User.class);
+        jwtToken = "Bearer " + jwtUtils.generateToken(user);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/meetings/delete/1")
                         .contentType(MediaType.APPLICATION_JSON)

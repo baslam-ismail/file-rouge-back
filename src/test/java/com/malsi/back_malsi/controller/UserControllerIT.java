@@ -48,7 +48,7 @@ public class UserControllerIT {
         testUser.setPassword("password123");
         testUser.setRole("client");
         userRepository.save(testUser);
-        jwtToken = "Bearer " + jwtUtils.generateToken("test@example.com");
+        jwtToken = "Bearer " + jwtUtils.generateToken(testUser);
     }
 
     @Test

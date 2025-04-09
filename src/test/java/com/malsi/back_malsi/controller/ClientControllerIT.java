@@ -7,7 +7,6 @@ import com.malsi.back_malsi.model.Client;
 import com.malsi.back_malsi.model.User;
 import com.malsi.back_malsi.service.ClientService;
 import com.malsi.back_malsi.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
