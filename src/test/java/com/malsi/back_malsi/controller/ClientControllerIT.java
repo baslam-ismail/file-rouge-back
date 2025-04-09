@@ -7,7 +7,6 @@ import com.malsi.back_malsi.model.Client;
 import com.malsi.back_malsi.model.User;
 import com.malsi.back_malsi.service.ClientService;
 import com.malsi.back_malsi.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +57,7 @@ public class ClientControllerIT {
 
         UserDto savedUserDto = userService.createUser(user);
         User savedUser = this.modelMapper.map(savedUserDto, User.class);
-        jwtToken = "Bearer " + jwtUtils.generateToken("john.doe@example.com");
+        jwtToken = "Bearer " + jwtUtils.generateToken(savedUser);
 
         Client client = new Client();
         client.setName("John Doe Client");
@@ -87,7 +86,7 @@ public class ClientControllerIT {
 
         UserDto savedUserDto = userService.createUser(user1);
         User savedUser = this.modelMapper.map(savedUserDto, User.class);
-        jwtToken = "Bearer " + jwtUtils.generateToken("john.doe1@example.com");
+        jwtToken = "Bearer " + jwtUtils.generateToken(savedUser);
 
         Client client = new Client();
         client.setEmail(null);

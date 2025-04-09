@@ -8,6 +8,7 @@ import java.util.function.Function;
 
 import javax.crypto.spec.SecretKeySpec;
 
+import com.malsi.back_malsi.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
@@ -27,16 +28,23 @@ public class JwtUtils {
     @Value("${app.jwt-expiration}")
     private long jwtExpiration;
 
-    public String generateToken(String email) {
-        Map<String, Object> claims = new HashMap<>();
 
-        return createToken(claims, email);
+    public String generateToken(User user) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", user.getRole());
+        claims.put("userId", user.getId());
+        return createToken(claims, user.getEmail());
     }
 
+
     public String createToken(Map<String, Object> claims, String subject) {
-        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
-                .signWith(getSignedKey(), SignatureAlgorithm.HS256).compact();
+                .signWith(getSignedKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 
     public Key getSignedKey() {
@@ -51,6 +59,14 @@ public class JwtUtils {
 
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    public Long extractUserId(String token) {
+        try {
+            return extractClaim(token, claims -> ((Integer) claims.get("userId")).longValue());
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -68,5 +84,10 @@ public class JwtUtils {
 
     private Date extractExpirationDate(String token) {
         return extractClaim(token, Claims::getExpiration);
+    }
+
+    @SuppressWarnings("unchecked")
+    public String extractRole(String token) {
+            return extractClaim(token, claims -> (String) claims.get("roles"));
     }
 }
